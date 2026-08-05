@@ -5,8 +5,8 @@ import numpy as np
 # =========================
 # File paths
 # =========================
-input_file = r"D:\WORK\MEDICINE\Project\Kidney\DGF\CODS\CVA.xlsx"
-output_file = r"D:\WORK\MEDICINE\Project\Kidney\DGF\CODS\CVA_processed.xlsx"
+input_file = r"D:\WORK\CVA.xlsx"
+output_file = r"D:\WORK\CVA_processed.xlsx"
 
 
 # =========================
