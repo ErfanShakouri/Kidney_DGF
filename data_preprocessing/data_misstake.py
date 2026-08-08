@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import re
 
 
 # ============================================================
@@ -13,8 +12,8 @@ output_file = r"D:\WORK\MEDICINE\Project\Kidney\DGF\CODS\number_cleaned_numeric.
 # ============================================================
 # Read Excel file
 # ============================================================
-df = pd.read_excel(input_file, header=1)
 
+df = pd.read_excel(input_file, header=1)
 
 df.columns = df.columns.astype(str).str.strip()
 
@@ -43,7 +42,7 @@ numeric_columns = [col for col in df.columns if col != id_col]
 def is_real_empty(value):
     """
     True only for real empty/missing cells.
-    Invalid symbols like '-', '–', '?' are NOT considered real empty.
+    Invalid symbols like '-', '–', '?', '#DIV/0!' are NOT considered real empty.
     """
     if pd.isna(value):
         return True
@@ -60,6 +59,7 @@ def clean_numeric_value(value):
     """
     Convert a cell value to numeric if possible.
     Invalid non-numeric values become NaN.
+
     Returns:
         cleaned_value, is_problem
     """
@@ -94,7 +94,7 @@ def clean_numeric_value(value):
     # Convert decimal comma to decimal dot
     value_str = value_str.replace(",", ".")
 
-    # Common invalid symbols and texts
+    # Common invalid symbols, texts, and Excel formula errors
     invalid_values = {
         "-", "–", "—", "−", "_",
         "?", "؟",
@@ -103,14 +103,26 @@ def clean_numeric_value(value):
         "none", "None",
         "null", "NULL",
         "خالی", "نامشخص", "نامعلوم",
-        "ندارد", "مشخص نیست"
+        "ندارد", "مشخص نیست",
+
+        # Excel formula errors
+        "#DIV/0!",
+        "#VALUE!",
+        "#REF!",
+        "#N/A",
+        "#NAME?",
+        "#NUM!",
+        "#NULL!",
     }
 
     if value_str in invalid_values:
         return np.nan, True
 
+    # Any other Excel-like error
+    if value_str.startswith("#"):
+        return np.nan, True
+
     # Fix obvious double-dot typo like 1..36
-    # If you do NOT want automatic correction, remove this block.
     if value_str.count(".") > 1:
         fixed_value = value_str.replace("..", ".")
         try:
