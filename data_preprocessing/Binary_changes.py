@@ -15,6 +15,10 @@ output_file = r"D:\WORK\binary_columns_only.xlsx"
 binary_columns = [
     "Preemptive",
     "Prev_KT_No",
+    "Rec_Sex",
+    "Donor_Sex",
+    "Dialysis_Type",
+    "Donor_Type",
     # Add more column names here
 ]
 
@@ -55,12 +59,18 @@ def convert_yes_no(value):
 
     yes_values = {
         "yes", "y", "1", "1.0", "true",
-        "بله", "بلی", "دارد", "مثبت"
+        "male","m", "مرد",
+        "بله", "بلی", "دارد", "مثبت",
+        "hd", "deceased"
+        
     }
 
     no_values = {
         "no", "n", "0", "0.0", "false",
-        "خیر", "نه", "ندارد", "منفی"
+        "female", "f", "زن",
+        "خیر", "نه", "ندارد", "منفی",
+        "pd", "living"       
+        
     }
 
     if value_clean in yes_values:
