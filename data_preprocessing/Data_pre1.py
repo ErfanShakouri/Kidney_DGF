@@ -38,7 +38,7 @@ values = df[target_col].astype(str).str.strip().str.lower()
 df["Rejection"] = values.map({
     "no": 0,
     "yes": 1,
-    "expire": "null"
+    "expire": 1
 })
 
 # Create the Expire column
