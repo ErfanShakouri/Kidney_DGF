@@ -12,10 +12,10 @@ output_file = r"D:\WORK\LOS_DAYS_grouped.xlsx"
 # ============================================================
 # Read Excel file
 # ============================================================
-# If column names are in the second row, use header=1
+# If real column names are in the second row, use header=1
 df = pd.read_excel(input_file, header=1)
 
-# If column names are in the first row, use this instead:
+# If real column names are in the first row, use this instead:
 # df = pd.read_excel(input_file)
 
 df.columns = df.columns.astype(str).str.strip()
@@ -40,34 +40,41 @@ df[los_col] = pd.to_numeric(df[los_col], errors="coerce")
 
 
 # ============================================================
-# Create LOS group
+# Create LOS group column
 # ============================================================
-def classify_los(value):
+def classify_los_week(value):
     if pd.isna(value):
-        return "Unknown"
-    elif 0 <= value <= 13:
-        return "Early"
-    elif 14 <= value <= 21:
-        return "Med"
+        return np.nan
+
+    elif 0 <= value <= 7:
+        return "Week1"
+
+    elif 8 <= value <= 14:
+        return "Week2"
+
+    elif 15 <= value <= 21:
+        return "Week3"
+
     elif value > 21:
-        return "Late"
+        return "Long"
+
     else:
-        return "Unknown"
+        return np.nan
 
 
-df["LOS_Group"] = df[los_col].apply(classify_los)
+df["LOS_Week_Group"] = df[los_col].apply(classify_los_week)
 
 
 # ============================================================
-# Optional: create summary table
+# Summary table
 # ============================================================
 summary = (
-    df["LOS_Group"]
+    df["LOS_Week_Group"]
     .value_counts(dropna=False)
     .reset_index()
 )
 
-summary.columns = ["LOS_Group", "Count"]
+summary.columns = ["LOS_Week_Group", "Count"]
 summary["Percent"] = summary["Count"] / summary["Count"].sum() * 100
 
 
@@ -75,11 +82,12 @@ summary["Percent"] = summary["Count"] / summary["Count"].sum() * 100
 # Save output
 # ============================================================
 with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
-    df.to_excel(writer, sheet_name="Data_with_LOS_Group", index=False)
-    summary.to_excel(writer, sheet_name="LOS_Group_Summary", index=False)
+    df.to_excel(writer, sheet_name="Data_with_LOS_Week_Group", index=False)
+    summary.to_excel(writer, sheet_name="LOS_Week_Group_Summary", index=False)
 
 
 print("Done!")
 print(f"Output file saved as: {output_file}")
-print("\nLOS Group Summary:")
+
+print("\nLOS Week Group Summary:")
 print(summary)
