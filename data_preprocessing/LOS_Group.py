@@ -5,8 +5,8 @@ import numpy as np
 # ============================================================
 # File paths
 # ============================================================
-input_file = r"D:\WORK\LOS_DAYS.xlsx"
-output_file = r"D:\WORK\LOS_DAYS_grouped.xlsx"
+input_file = r"D:\WORK\MEDICINE\Project\Kidney\DGF\CODS\LOS_DAYS.xlsx"
+output_file = r"D:\WORK\MEDICINE\Project\Kidney\DGF\CODS\LOS_DAYS_3groups.xlsx"
 
 
 # ============================================================
@@ -40,41 +40,38 @@ df[los_col] = pd.to_numeric(df[los_col], errors="coerce")
 
 
 # ============================================================
-# Create LOS group column
+# Create LOS_Days_cat
 # ============================================================
-def classify_los_week(value):
+def classify_los(value):
     if pd.isna(value):
         return np.nan
 
-    elif 0 <= value <= 7:
-        return "Week1"
+    elif 0 <= value <= 13:
+        return "early"
 
-    elif 8 <= value <= 14:
-        return "Week2"
+    elif 14 <= value <= 21:
+        return "med"
 
-    elif 15 <= value <= 21:
-        return "Week3"
-
-    elif value > 21:
-        return "Long"
+    elif value >= 22:
+        return "late"
 
     else:
         return np.nan
 
 
-df["LOS_Week_Group"] = df[los_col].apply(classify_los_week)
+df["LOS_Days_cat"] = df[los_col].apply(classify_los)
 
 
 # ============================================================
 # Summary table
 # ============================================================
 summary = (
-    df["LOS_Week_Group"]
+    df["LOS_Days_cat"]
     .value_counts(dropna=False)
     .reset_index()
 )
 
-summary.columns = ["LOS_Week_Group", "Count"]
+summary.columns = ["LOS_Days_cat", "Count"]
 summary["Percent"] = summary["Count"] / summary["Count"].sum() * 100
 
 
@@ -82,12 +79,12 @@ summary["Percent"] = summary["Count"] / summary["Count"].sum() * 100
 # Save output
 # ============================================================
 with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
-    df.to_excel(writer, sheet_name="Data_with_LOS_Week_Group", index=False)
-    summary.to_excel(writer, sheet_name="LOS_Week_Group_Summary", index=False)
+    df.to_excel(writer, sheet_name="Data_with_LOS_Days_cat", index=False)
+    summary.to_excel(writer, sheet_name="LOS_Days_cat_Summary", index=False)
 
 
 print("Done!")
 print(f"Output file saved as: {output_file}")
 
-print("\nLOS Week Group Summary:")
+print("\nLOS_Days_cat Summary:")
 print(summary)
