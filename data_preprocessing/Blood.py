@@ -3,7 +3,7 @@ import numpy as np
 
 
 # ============================================================
-# File paths
+# File path
 # ============================================================
 input_file = r"D:\WORK\category.xlsx"
 output_file = r"D:\WORK\blood_type_ABO_processed.xlsx"
