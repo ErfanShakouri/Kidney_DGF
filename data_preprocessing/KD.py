@@ -3,7 +3,7 @@ import numpy as np
 
 
 # ============================================================
-# File paths
+# File path
 # ============================================================
 input_excel = r"D:\WORK\KD.xlsx"
 output_excel = r"D:\WORK\KD_with_KDPI_KDRI.xlsx"
