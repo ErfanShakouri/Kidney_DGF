@@ -9,7 +9,7 @@ input_file = r"D:\WORK\Main_Information.xlsx"
 output_file = r"D:\WORK\binary_columns_only.xlsx"
 
 
-# ============================================================
+# ===========================================================
 # Specify binary columns here
 # ============================================================
 binary_columns = [
